@@ -1,0 +1,10 @@
+<phpunit cacheResult="false">
+    <testsuite name="SlmQueueRabbitMq Test Suite">
+        <directory>./</directory>
+    </testsuite>
+    <filter>
+        <whitelist>
+            <directory>../src/*/</directory>
+        </whitelist>
+    </filter>
+</phpunit>
