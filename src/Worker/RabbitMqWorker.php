@@ -9,7 +9,7 @@ use SlmQueue\Worker\AbstractWorker;
 use SlmQueue\Worker\Event\ProcessJobEvent;
 use SlmQueueRabbitMq\Job\MessageRetryCounter;
 use SlmQueueRabbitMq\Queue\RabbitMqQueueInterface;
-use Zend\EventManager\EventManagerInterface;
+use Laminas\EventManager\EventManagerInterface;
 use Throwable;
 use Exception;
 
@@ -40,12 +40,12 @@ class RabbitMqWorker extends AbstractWorker
 
     /**
      * @inheritdoc
-     * @return int|null Status of the job
+     * @return int
      */
-    public function processJob(JobInterface $job, QueueInterface $queue)
+    public function processJob(JobInterface $job, QueueInterface $queue): int
     {
         if (!$queue instanceof RabbitMqQueueInterface) {
-            return null;
+            return ProcessJobEvent::JOB_STATUS_FAILURE;
         }
 
         try {

@@ -6,7 +6,7 @@ use SlmQueue\Strategy\AbstractStrategy;
 use SlmQueue\Worker\Event\AbstractWorkerEvent;
 use SlmQueue\Worker\Event\ProcessIdleEvent;
 use SlmQueueRabbitMq\Queue\RabbitMqQueueInterface;
-use Zend\EventManager\EventManagerInterface;
+use Laminas\EventManager\EventManagerInterface;
 
 class IdleNapStrategy extends AbstractStrategy
 {

@@ -9,8 +9,8 @@ use SlmQueue\Factory\WorkerFactory;
 use SlmQueue\Strategy\StrategyPluginManager;
 use SlmQueueRabbitMq\Job\MessageRetryCounter;
 use SlmQueueRabbitMq\Worker\RabbitMqWorker;
-use Zend\EventManager\EventManager;
-use Zend\ServiceManager\FactoryInterface;
+use Laminas\EventManager\EventManager;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class RabbitMqWorkerFactory extends WorkerFactory implements FactoryInterface
 {

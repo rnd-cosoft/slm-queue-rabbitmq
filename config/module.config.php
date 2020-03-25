@@ -5,7 +5,7 @@ use SlmQueueRabbitMq\Factory\RabbitMqWorkerControllerFactory;
 use SlmQueueRabbitMq\Strategy\IdleNapStrategy;
 use SlmQueueRabbitMq\Worker\RabbitMqWorker;
 use SlmQueueRabbitMq\Factory\RabbitMqWorkerFactory;
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     'slm_queue' => [

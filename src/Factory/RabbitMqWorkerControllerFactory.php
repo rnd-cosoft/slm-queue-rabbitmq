@@ -6,8 +6,8 @@ use SlmQueue\Queue\QueuePluginManager;
 use SlmQueueRabbitMq\Controller\RabbitMqWorkerController;
 use SlmQueueRabbitMq\Worker\RabbitMqWorker;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class RabbitMqWorkerControllerFactory implements FactoryInterface
 {
@@ -29,7 +29,7 @@ class RabbitMqWorkerControllerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
     {
-        /** @var \Zend\Mvc\Controller\ControllerManager $serviceLocator*/
+        /** @var \Laminas\Mvc\Controller\ControllerManager $serviceLocator*/
 
         return $this($serviceLocator->getServiceLocator(), RabbitMqWorkerController::class);
     }

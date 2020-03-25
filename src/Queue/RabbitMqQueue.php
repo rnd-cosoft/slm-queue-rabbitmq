@@ -49,7 +49,7 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
     /**
      * @inheritdoc
      */
-    public function push(JobInterface $job, array $options = [])
+    public function push(JobInterface $job, array $options = []): void
     {
         $options = array_merge($this->defaultMessageOptions, $options);
         $message = new AMQPMessage($this->serializeJob($job), $options);
@@ -62,7 +62,7 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
      * @inheritdoc
      * @return JobInterface|null
      */
-    public function pop(array $options = [])
+    public function pop(array $options = []): ?JobInterface
     {
         $prefetchSize = null;
         $prefetchCount = 1;
@@ -88,7 +88,7 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
     /**
      * @inheritdoc
      */
-    public function delete(JobInterface $job)
+    public function delete(JobInterface $job): void
     {
         $this->getChannel()->basic_ack($job->getId());
     }

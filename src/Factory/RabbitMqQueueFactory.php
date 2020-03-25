@@ -7,8 +7,8 @@ use SlmQueueRabbitMq\Connection\Connection;
 use SlmQueueRabbitMq\Queue\RabbitMqQueue;
 use SlmQueueRabbitMq\Options\RabbitMqOptions;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class RabbitMqQueueFactory implements FactoryInterface
 {
