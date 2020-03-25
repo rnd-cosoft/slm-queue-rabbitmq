@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SlmQueue\Factory\WorkerFactory;
 use SlmQueue\Strategy\StrategyPluginManager;
+use SlmQueue\Worker\WorkerInterface;
 use SlmQueueRabbitMq\Job\MessageRetryCounter;
 use SlmQueueRabbitMq\Worker\RabbitMqWorker;
 use Laminas\EventManager\EventManager;
@@ -18,7 +19,7 @@ class RabbitMqWorkerFactory extends WorkerFactory implements FactoryInterface
      * @inheritdoc
      * @return RabbitMqWorker
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): WorkerInterface
     {
         /** @var EventManager $eventManager */
         $eventManager = $container->has('EventManager') ? $container->get('EventManager') : new EventManager();
