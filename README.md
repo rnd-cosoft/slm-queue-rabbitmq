@@ -8,7 +8,7 @@ Created by Cosoft RnD team
 
 Requirements
 ------------
-* [Zend-MVC](https://github.com/zendframework/zend-mvc)
+* [Laminas-MVC](https://github.com/laminas/laminas-mvc)
 * [SlmQueue](https://github.com/juriansluiman/SlmQueue)
 * [php-amqplib](https://github.com/php-amqplib)
 

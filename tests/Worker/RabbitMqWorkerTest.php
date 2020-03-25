@@ -14,7 +14,7 @@ use SlmQueue\Worker\Event\ProcessJobEvent;
 use SlmQueueRabbitMq\Job\MessageRetryCounter;
 use SlmQueueRabbitMq\Queue\RabbitMqQueueInterface;
 use SlmQueueRabbitMq\Worker\RabbitMqWorker;
-use Zend\EventManager\EventManagerInterface;
+use Laminas\EventManager\EventManagerInterface;
 
 class RabbitMqWorkerTest extends TestCase
 {
@@ -47,7 +47,10 @@ class RabbitMqWorkerTest extends TestCase
         /** @var QueueInterface|MockObject $queue */
         $queue = $this->createMock(QueueInterface::class);
 
-        $this->assertNull($this->rabbitMqWorker->processJob($job, $queue));
+        $this->assertSame(
+            ProcessJobEvent::JOB_STATUS_FAILURE,
+            $this->rabbitMqWorker->processJob($job, $queue)
+        );
     }
 
     public function testProcessJobWhenSuccess()
