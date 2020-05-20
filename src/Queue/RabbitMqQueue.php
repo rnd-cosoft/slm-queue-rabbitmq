@@ -53,7 +53,10 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
     {
         $options = array_merge($this->defaultMessageOptions, $options);
         $message = new AMQPMessage($this->serializeJob($job), $options);
-        $message->set('application_headers', new AMQPTable($options['application_headers']));
+
+        if (isset($options['application_headers'])) {
+            $message->set('application_headers', new AMQPTable($options['application_headers']));
+        }
 
         $this->getChannel()->basic_publish($message, $this->getName());
     }
