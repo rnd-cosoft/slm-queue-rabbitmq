@@ -128,6 +128,19 @@ class RabbitMqQueueTest extends TestCase
         );
     }
 
+    public function testPushWhenApplicationHeadersNotSet(): void
+    {
+        $this->channel->expects($this->once())->method('basic_publish')->with($this->callback(
+            function (AMQPMessage $message) {
+                $this->assertFalse($message->has('application_headers'));
+
+                return true;
+            })
+        );
+
+        $this->rabbitMqQueue->push($this->createJobMock(123, []));
+    }
+
     public function testPopWhenNoMessageInQueue(): void
     {
         $this->channel->method('basic_get');
