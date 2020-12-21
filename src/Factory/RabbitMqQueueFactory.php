@@ -7,7 +7,6 @@ use SlmQueueRabbitMq\Connection\Connection;
 use SlmQueueRabbitMq\Queue\RabbitMqQueue;
 use SlmQueueRabbitMq\Options\RabbitMqOptions;
 use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class RabbitMqQueueFactory implements FactoryInterface
@@ -41,16 +40,18 @@ class RabbitMqQueueFactory implements FactoryInterface
             $options->getPort(),
             $options->getUser(),
             $options->getPassword(),
-            $options->getVhost()
+            $options->getVhost(),
+            false,
+            'AMQPLAIN',
+            'null',
+            'en_US',
+            3.0,
+            3.0,
+            null,
+            false,
+            0,
+            $options->getChannelRpcTimeout(),
+            null
         );
-    }
-
-    /**
-     * @inheritdoc
-     * @return RabbitMqQueue
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator, $canonicalName = null, $requestedName = null)
-    {
-        return $this($serviceLocator->getServiceLocator(), $requestedName);
     }
 }

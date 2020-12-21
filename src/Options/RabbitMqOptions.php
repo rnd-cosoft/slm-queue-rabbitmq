@@ -21,6 +21,9 @@ class RabbitMqOptions extends AbstractOptions
     /** @var string */
     protected $password;
 
+    /** @var float */
+    protected $channelRpcTimeout;
+
     /**
      * @return string
      */
@@ -114,5 +117,24 @@ class RabbitMqOptions extends AbstractOptions
         $this->password = $password;
 
         return $this;
+    }
+
+    /**
+     * @param float $channelRpcTimeout
+     * @return $this
+     */
+    public function setChannelRpcTimeout($channelRpcTimeout)
+    {
+        $this->channelRpcTimeout = $channelRpcTimeout;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getChannelRpcTimeout()
+    {
+        return $this->channelRpcTimeout;
     }
 }

@@ -12,9 +12,42 @@ class Connection extends AMQPLazyConnection
     /**
      * @inheritdoc
      */
-    public function __construct(string $host, string $port, string $user, string $password, string $vhost = '/')
-    {
-        parent::__construct($host, $port, $user, $password, $vhost);
+    public function __construct(
+        string $host,
+        string $port,
+        string $user,
+        string $password,
+        string $vhost = '/',
+        bool $insist = false,
+        string $login_method = 'AMQPLAIN',
+        $login_response = null,
+        string $locale = 'en_US',
+        $connection_timeout = 3.0,
+        $read_write_timeout = 3.0,
+        $context = null,
+        bool $keepalive = false,
+        int $heartbeat = 0,
+        $channel_rpc_timeout = 0.0,
+        ?string $ssl_protocol = null
+    ) {
+        parent::__construct(
+            $host,
+            $port,
+            $user,
+            $password,
+            $vhost,
+            $insist,
+            $login_method,
+            $login_response,
+            $locale,
+            $connection_timeout,
+            $read_write_timeout,
+            $context,
+            $keepalive,
+            $heartbeat,
+            $channel_rpc_timeout,
+            $ssl_protocol
+        );
 
         $this->set_connection_block_handler(function() {
             $this->connectionBlocked = true;
