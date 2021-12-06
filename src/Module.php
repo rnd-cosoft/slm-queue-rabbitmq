@@ -2,16 +2,14 @@
 
 namespace SlmQueueRabbitMq;
 
-use Laminas\Console\Adapter\AdapterInterface;
 use Laminas\ModuleManager\Feature;
 
 class Module implements
     Feature\ConfigProviderInterface,
-    Feature\ConsoleUsageProviderInterface,
     Feature\DependencyIndicatorInterface
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getConfig()
     {
@@ -19,19 +17,7 @@ class Module implements
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function getConsoleUsage(AdapterInterface $console)
-    {
-        return [
-            'queue rabbitmq <queueName> --start' => 'Process the jobs',
-
-            ['<queueName>', 'Queue\'s name to process'],
-        ];
-    }
-
-    /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getModuleDependencies()
     {
