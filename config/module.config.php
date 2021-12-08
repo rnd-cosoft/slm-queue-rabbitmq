@@ -45,7 +45,7 @@ return [
                 'slm-queue-rabbit_mq-worker' => [
                     'type' => 'Simple',
                     'options' => [
-                        'route' => 'queue <queue> --start',
+                        'route' => 'queue rabbitmq <queue> --start',
                         'defaults' => [
                             'controller' => RabbitMqWorkerController::class,
                             'action' => 'process',

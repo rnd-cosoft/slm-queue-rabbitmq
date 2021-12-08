@@ -21,7 +21,7 @@ class Module implements
     public function getConsoleUsage(AdapterInterface $console)
     {
         return [
-            'queue <queueName> --start' => 'Process the jobs',
+            'queue rabbitmq <queueName> --start' => 'Process the jobs',
 
             ['<queueName>', 'Queue\'s name to process'],
         ];
