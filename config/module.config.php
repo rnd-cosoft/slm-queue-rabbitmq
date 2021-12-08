@@ -1,6 +1,8 @@
 <?php
 
 use SlmQueueRabbitMq\ConfigFactory;
+use SlmQueueRabbitMq\Controller\RabbitMqWorkerController;
+use SlmQueueRabbitMq\Factory\RabbitMqWorkerControllerFactory;
 use SlmQueueRabbitMq\Strategy\IdleNapStrategy;
 use SlmQueueRabbitMq\Worker\RabbitMqWorker;
 use SlmQueueRabbitMq\Factory\RabbitMqWorkerFactory;
@@ -28,7 +30,29 @@ return [
     ],
     'service_manager' => [
         'factories' => [
+            RabbitMqWorker::class => RabbitMqWorkerFactory::class,
             'SlmQueueRabbitMq\Config' => ConfigFactory::class,
+        ],
+    ],
+    'controllers' => [
+        'factories' => [
+            RabbitMqWorkerController::class => RabbitMqWorkerControllerFactory::class,
+        ],
+    ],
+    'console' => [
+        'router' => [
+            'routes' => [
+                'slm-queue-rabbit_mq-worker' => [
+                    'type' => 'Simple',
+                    'options' => [
+                        'route' => 'queue <queue> --start',
+                        'defaults' => [
+                            'controller' => RabbitMqWorkerController::class,
+                            'action' => 'process',
+                        ],
+                    ],
+                ],
+            ],
         ],
     ],
     'slm-queue-rabbitmq' => [
