@@ -16,7 +16,6 @@
     },
     "require": {
         "php": "^7.4 || ~8.0",
-        "laminas/laminas-console": "^2.7",
         "laminas/laminas-cli": "^1.1",
         "laminas/laminas-modulemanager": "^2.8",
         "laminas/laminas-stdlib": "^3.2",
