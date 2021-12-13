@@ -13,7 +13,7 @@ class MessageRetryCounterTest extends TestCase
     /** @var MessageRetryCounter */
     private $messageRetryCounter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->messageRetryCounter = new MessageRetryCounter([
             'some_queue_name' => [

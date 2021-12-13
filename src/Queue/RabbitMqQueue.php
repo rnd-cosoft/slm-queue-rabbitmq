@@ -9,6 +9,7 @@ use PhpAmqpLib\Wire\AMQPTable;
 use SlmQueue\Job\JobInterface;
 use SlmQueue\Job\JobPluginManager;
 use SlmQueue\Queue\AbstractQueue;
+use SlmQueueRabbitMq\Worker\RabbitMqWorker;
 
 class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
 {
@@ -20,6 +21,8 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
 
     /** @var array */
     private $defaultMessageOptions;
+
+    protected static $defaultWorkerName = RabbitMqWorker::class;
 
     /**
      * @param Connection $connection

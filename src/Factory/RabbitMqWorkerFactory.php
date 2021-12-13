@@ -5,7 +5,7 @@ namespace SlmQueueRabbitMq\Factory;
 use Interop\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use SlmQueue\Factory\WorkerFactory;
+use SlmQueue\Factory\WorkerAbstractFactory;
 use SlmQueue\Strategy\StrategyPluginManager;
 use SlmQueue\Worker\WorkerInterface;
 use SlmQueueRabbitMq\Job\MessageRetryCounter;
@@ -13,7 +13,7 @@ use SlmQueueRabbitMq\Worker\RabbitMqWorker;
 use Laminas\EventManager\EventManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
-class RabbitMqWorkerFactory extends WorkerFactory implements FactoryInterface
+class RabbitMqWorkerFactory extends WorkerAbstractFactory implements FactoryInterface
 {
     /**
      * @inheritdoc
