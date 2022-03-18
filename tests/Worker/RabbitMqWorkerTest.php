@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlmQueueRabbitMqTest\Worker;
 
-use TypeError;
 use Exception;
-use Throwable;
+use Laminas\EventManager\EventManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -14,7 +15,8 @@ use SlmQueue\Worker\Event\ProcessJobEvent;
 use SlmQueueRabbitMq\Job\MessageRetryCounter;
 use SlmQueueRabbitMq\Queue\RabbitMqQueueInterface;
 use SlmQueueRabbitMq\Worker\RabbitMqWorker;
-use Laminas\EventManager\EventManagerInterface;
+use Throwable;
+use TypeError;
 
 class RabbitMqWorkerTest extends TestCase
 {
@@ -32,9 +34,9 @@ class RabbitMqWorkerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->eventManager = $this->createMock(EventManagerInterface::class);
+        $this->eventManager        = $this->createMock(EventManagerInterface::class);
         $this->messageRetryCounter = $this->createMock(MessageRetryCounter::class);
-        $this->logger = $this->createMock(LoggerInterface::class);
+        $this->logger              = $this->createMock(LoggerInterface::class);
 
         $this->rabbitMqWorker = new RabbitMqWorker($this->eventManager, $this->messageRetryCounter, $this->logger);
     }
@@ -74,7 +76,7 @@ class RabbitMqWorkerTest extends TestCase
     {
         /** @var JobInterface|MockObject $job */
         $job = $this->createMock(JobInterface::class);
-        $job->method('execute')->willThrowException(new \Exception());
+        $job->method('execute')->willThrowException(new Exception());
         $this->logger->expects($this->once())->method('error');
         /** @var QueueInterface|MockObject $queue */
         $queue = $this->createMock(RabbitMqQueueInterface::class);
@@ -96,8 +98,7 @@ class RabbitMqWorkerTest extends TestCase
         $job = $this->createMock(JobInterface::class);
         $job->method('execute')->will($this->throwException($originalException));
         $this->logger->expects($this->once())->method('warning')->willReturnCallback(
-            function ($message, array $context = array()) use ($originalException)
-            {
+            function ($message, array $context = []) use ($originalException) {
                 $this->assertInstanceOf(Exception::class, $context['exception'], 'exception is of correct class type');
                 /** @var Throwable $exception */
                 $exception = $context['exception'];

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlmQueueRabbitMq\Queue;
 
 use PhpAmqpLib\Channel\AMQPChannel as Channel;
@@ -10,6 +12,8 @@ use SlmQueue\Job\JobInterface;
 use SlmQueue\Job\JobPluginManager;
 use SlmQueue\Queue\AbstractQueue;
 use SlmQueueRabbitMq\Worker\RabbitMqWorker;
+
+use function array_merge;
 
 class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
 {
@@ -22,12 +26,11 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
     /** @var array */
     private $defaultMessageOptions;
 
+    /** @var string */
     protected static $defaultWorkerName = RabbitMqWorker::class;
 
     /**
-     * @param Connection $connection
      * @param string $name
-     * @param JobPluginManager $jobPluginManager
      * @param array $defaultMessageOptions
      */
     public function __construct(
@@ -36,7 +39,7 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
         JobPluginManager $jobPluginManager,
         array $defaultMessageOptions
     ) {
-        $this->connection = $connection;
+        $this->connection            = $connection;
         $this->defaultMessageOptions = $defaultMessageOptions;
 
         parent::__construct($name, $jobPluginManager);
@@ -50,7 +53,7 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function push(JobInterface $job, array $options = []): void
     {
@@ -65,14 +68,14 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @return JobInterface|null
      */
     public function pop(array $options = []): ?JobInterface
     {
-        $prefetchSize = null;
+        $prefetchSize  = null;
         $prefetchCount = 1;
-        $aGlobal = null;
+        $aGlobal       = null;
 
         $this->getChannel()->basic_qos($prefetchSize, $prefetchCount, $aGlobal);
 
@@ -92,7 +95,7 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function delete(JobInterface $job): void
     {
@@ -100,7 +103,7 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function release(JobInterface $job, array $options = [])
     {
@@ -108,19 +111,16 @@ class RabbitMqQueue extends AbstractQueue implements RabbitMqQueueInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function bury(JobInterface $job, array $options = [])
     {
         $this->getChannel()->basic_reject($job->getId(), false);
     }
 
-    /**
-     * @return Channel
-     */
     private function getChannel(): Channel
     {
-        if (!$this->channel) {
+        if (! $this->channel) {
             $this->channel = $this->connection->channel();
         }
 

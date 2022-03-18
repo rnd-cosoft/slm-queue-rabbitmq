@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlmQueueRabbitMqTest\Queue;
 
 use PhpAmqpLib\Channel\AMQPChannel as Channel;
 use PhpAmqpLib\Connection\AbstractConnection as Connection;
+use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use SlmQueue\Job\JobInterface;
 use SlmQueue\Job\JobPluginManager;
-use PhpAmqpLib\Message\AMQPMessage;
 use SlmQueueRabbitMq\Queue\RabbitMqQueue;
 
 class RabbitMqQueueTest extends TestCase
@@ -28,7 +31,7 @@ class RabbitMqQueueTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->connection = $this->createMock(Connection::class);
+        $this->connection       = $this->createMock(Connection::class);
         $this->jobPluginManager = $this->createMock(JobPluginManager::class);
 
         $this->channel = $this->createMock(Channel::class);
@@ -59,15 +62,14 @@ class RabbitMqQueueTest extends TestCase
                 $this->assertSame(1, $message->get('delivery_mode'));
 
                 return true;
-            })
-        );
+            }
+        ));
 
-
-        $id = 123;
+        $id      = 123;
         $content = [
             'some_key' => 'some_value',
         ];
-        $job = $this->createJobMock($id, $content);
+        $job     = $this->createJobMock($id, $content);
 
         $this->rabbitMqQueue = new RabbitMqQueue(
             $this->connection,
@@ -103,7 +105,7 @@ class RabbitMqQueueTest extends TestCase
             function (
                 AMQPMessage $msg,
                 string $queueName
-            ) use ($message) {
+            ) {
                 $this->assertEquals(
                     '{"content":"a:1:{s:8:\"some_key\";s:10:\"some_value\";}","metadata":null}',
                     $msg->getBody(),
@@ -135,8 +137,8 @@ class RabbitMqQueueTest extends TestCase
                 $this->assertFalse($message->has('application_headers'));
 
                 return true;
-            })
-        );
+            }
+        ));
 
         $this->rabbitMqQueue->push($this->createJobMock(123, []));
     }
@@ -151,17 +153,19 @@ class RabbitMqQueueTest extends TestCase
     public function testPop(): void
     {
         $message = $this->createMessageMock();
-        $message->method('get_properties')->willReturn(['some_headers' => ['some_data',],]);
+        $message->method('get_properties')->willReturn(['some_headers' => ['some_data']]);
 
         /** @var JobInterface|MockObject $job */
         $job = $this->createMock(JobInterface::class);
-        $job->method('getMetadata')->willReturn(['__name__' => 'some_job_class_fqn',]);
+        $job->method('getMetadata')->willReturn(['__name__' => 'some_job_class_fqn']);
         $job->expects($this->exactly(2))->method('setMetadata')->withConsecutive(
-            [['__name__' => 'some_job_class_fqn',],],
-            [[
-                '__name__' => 'some_job_class_fqn',
-                'some_headers' => ['some_data',],
-            ],]
+            [['__name__' => 'some_job_class_fqn']],
+            [
+                [
+                    '__name__'     => 'some_job_class_fqn',
+                    'some_headers' => ['some_data'],
+                ],
+            ]
         );
 
         $this->jobPluginManager->method('get')->willReturn($job);
@@ -207,14 +211,14 @@ class RabbitMqQueueTest extends TestCase
 
         $this->channel->expects($this->once())->method('basic_reject')->with(123, false);
 
-        $job = $this->createJobMock(123 ,[]);
+        $job = $this->createJobMock(123, []);
 
         $rabbitMqQueue->bury($job);
     }
 
     /**
      * @return AMQPMessage|MockObject
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function createMessageMock()
     {
@@ -228,7 +232,6 @@ class RabbitMqQueueTest extends TestCase
     }
 
     /**
-     * @param int $id
      * @param array $content
      * @return MockObject|JobInterface
      */

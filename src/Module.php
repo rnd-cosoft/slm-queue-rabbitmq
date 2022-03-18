@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlmQueueRabbitMq;
 
-use Laminas\Console\Adapter\AdapterInterface;
 use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 use Laminas\ModuleManager\Feature\DependencyIndicatorInterface;
 
 class Module implements ConfigProviderInterface, DependencyIndicatorInterface
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getConfig()
     {
@@ -17,7 +18,7 @@ class Module implements ConfigProviderInterface, DependencyIndicatorInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getModuleDependencies()
     {

@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlmQueueRabbitMqTest\Job;
 
 use PhpAmqpLib\Wire\AMQPTable;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use SlmQueue\Job\JobInterface;
 use SlmQueueRabbitMq\Job\MessageRetryCounter;
+
+use function array_merge;
 
 class MessageRetryCounterTest extends TestCase
 {
@@ -43,7 +48,7 @@ class MessageRetryCounterTest extends TestCase
 
     public function testCanRetryWhenMessageIsDeadFirstTime()
     {
-        $headers = new AMQPTable(['x-death' => [['count' => 1,],],]);
+        $headers = new AMQPTable(['x-death' => [['count' => 1]]]);
 
         $job = $this->createJobMock(['application_headers' => $headers]);
 
@@ -52,7 +57,7 @@ class MessageRetryCounterTest extends TestCase
 
     public function testCanRetryWhenRetryLimitReached()
     {
-        $headers = new AMQPTable(['x-death' => [['count' => 2,],],]);
+        $headers = new AMQPTable(['x-death' => [['count' => 2]]]);
 
         $job = $this->createJobMock(['application_headers' => $headers]);
 
@@ -75,14 +80,14 @@ class MessageRetryCounterTest extends TestCase
     /**
      * @param array $headers
      * @return JobInterface|MockObject
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function createJobMock(array $headers)
     {
         /** @var JobInterface|MockObject $job */
         $job = $this->createMock(JobInterface::class);
         $job->method('getMetadata')->willReturn(array_merge(
-            ['__name__' => 'some_job_class_fqn',],
+            ['__name__' => 'some_job_class_fqn'],
             $headers
         ));
 

@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlmQueueRabbitMq;
 
-use Laminas\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class ConfigFactory implements FactoryInterface
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         return $container->get('config')['slm-queue-rabbitmq'];
     }

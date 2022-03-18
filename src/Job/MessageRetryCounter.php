@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlmQueueRabbitMq\Job;
 
 use PhpAmqpLib\Wire\AMQPTable;
 use SlmQueue\Job\JobInterface;
+
+use function current;
 
 class MessageRetryCounter
 {
@@ -18,32 +22,18 @@ class MessageRetryCounter
         $this->options = $options;
     }
 
-    /**
-     * @param JobInterface $job
-     * @param string $queueName
-     * @return bool
-     */
     public function canRetry(JobInterface $job, string $queueName): bool
     {
-        return $this->isRetryEnabled($queueName) && !$this->isRetryLimitReached($job, $queueName);
+        return $this->isRetryEnabled($queueName) && ! $this->isRetryLimitReached($job, $queueName);
     }
 
-    /**
-     * @param JobInterface $job
-     * @param string $queueName
-     * @return bool
-     */
     private function isRetryLimitReached(JobInterface $job, string $queueName): bool
     {
         $options = $this->getQueueOptions($queueName);
 
-        return $this->getCountOfDeath($job->getMetadata()) >= (int)$options['retry_limit'];
+        return $this->getCountOfDeath($job->getMetadata()) >= (int) $options['retry_limit'];
     }
 
-    /**
-     * @param string $queueName
-     * @return bool
-     */
     private function isRetryEnabled(string $queueName): bool
     {
         return $this->getQueueOptions($queueName)['retry_limit'] > 0;
@@ -51,7 +41,6 @@ class MessageRetryCounter
 
     /**
      * @param array $metadata
-     * @return int
      */
     private function getCountOfDeath(array $metadata): int
     {
@@ -65,11 +54,10 @@ class MessageRetryCounter
 
     /**
      * @param array $metadata
-     * @return null|AMQPTable
      */
     private function getMessageHeaders(array $metadata): ?AMQPTable
     {
-        if (!empty($metadata['application_headers'])) {
+        if (! empty($metadata['application_headers'])) {
             return $metadata['application_headers'];
         }
 
@@ -85,7 +73,7 @@ class MessageRetryCounter
         $deathInfo = null;
 
         $headers = $this->getMessageHeaders($metadata);
-        if ($headers && !empty($headers->getNativeData()['x-death'])) {
+        if ($headers && ! empty($headers->getNativeData()['x-death'])) {
             $deathInfo = $headers->getNativeData()['x-death'];
         }
 
@@ -93,7 +81,6 @@ class MessageRetryCounter
     }
 
     /**
-     * @param string $queueName
      * @return array
      */
     private function getQueueOptions(string $queueName): array

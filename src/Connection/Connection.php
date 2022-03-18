@@ -1,16 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlmQueueRabbitMq\Connection;
 
+use Exception;
 use PhpAmqpLib\Connection\AMQPLazyConnection;
 
+/**
+ * phpcs:disable WebimpressCodingStandard.NamingConventions.ValidVariableName
+ */
 class Connection extends AMQPLazyConnection
 {
     /** @var bool */
     private $connectionBlocked = false;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function __construct(
         string $host,
@@ -49,9 +55,9 @@ class Connection extends AMQPLazyConnection
             $ssl_protocol
         );
 
-        $this->set_connection_block_handler(function() {
+        $this->set_connection_block_handler(function () {
             $this->connectionBlocked = true;
-            throw new \Exception('connection.blocked is sent from the server');
+            throw new Exception('connection.blocked is sent from the server');
         });
     }
 
