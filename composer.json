@@ -22,7 +22,6 @@
         "laminas/laminas-eventmanager": "^3.2",
         "laminas/laminas-servicemanager": "^3.3",
         "laminas/laminas-mvc": "^3.1",
-        "container-interop/container-interop": "^1.2",
         "php-amqplib/php-amqplib": "^3.1",
         "slm/queue": "^3.0",
         "psr/log": "^1.1"
