@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlmQueueRabbitMq\Strategy;
 
+use Laminas\EventManager\EventManagerInterface;
 use SlmQueue\Strategy\AbstractStrategy;
 use SlmQueue\Worker\Event\AbstractWorkerEvent;
 use SlmQueue\Worker\Event\ProcessIdleEvent;
 use SlmQueueRabbitMq\Queue\RabbitMqQueueInterface;
-use Laminas\EventManager\EventManagerInterface;
+
+use function sleep;
 
 class IdleNapStrategy extends AbstractStrategy
 {
@@ -45,9 +49,6 @@ class IdleNapStrategy extends AbstractStrategy
         );
     }
 
-    /**
-     * @param ProcessIdleEvent $event
-     */
     public function onIdle(ProcessIdleEvent $event)
     {
         $queue = $event->getQueue();

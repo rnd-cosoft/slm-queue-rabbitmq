@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlmQueueRabbitMq\Options;
 
 use Laminas\Stdlib\AbstractOptions;
@@ -24,16 +26,12 @@ class RabbitMqOptions extends AbstractOptions
     /** @var float */
     protected $channelRpcTimeout;
 
-    /**
-     * @return string
-     */
     public function getHost(): string
     {
         return $this->host;
     }
 
     /**
-     * @param string $host
      * @return $this
      */
     public function setHost(string $host)
@@ -43,16 +41,12 @@ class RabbitMqOptions extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getPort(): int
     {
         return $this->port;
     }
 
     /**
-     * @param int $port
      * @return $this
      */
     public function setPort(int $port)
@@ -62,16 +56,12 @@ class RabbitMqOptions extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getUser(): string
     {
         return $this->user;
     }
 
     /**
-     * @param string $user
      * @return $this
      */
     public function setUser(string $user)
@@ -81,16 +71,12 @@ class RabbitMqOptions extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getVhost(): string
     {
         return $this->vhost;
     }
 
     /**
-     * @param string $vhost
      * @return $this
      */
     public function setVhost(string $vhost)
@@ -100,16 +86,12 @@ class RabbitMqOptions extends AbstractOptions
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPassword(): string
     {
         return $this->password;
     }
 
     /**
-     * @param string $password
      * @return $this
      */
     public function setPassword(string $password)

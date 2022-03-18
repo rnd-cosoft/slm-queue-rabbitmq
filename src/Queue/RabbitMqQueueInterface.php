@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SlmQueueRabbitMq\Queue;
 
 use SlmQueue\Job\JobInterface;
@@ -10,7 +12,6 @@ interface RabbitMqQueueInterface extends QueueInterface
     /**
      * Put a job that was popped back to the queue
      *
-     * @param  JobInterface $job
      * @param  array        $options
      * @return void
      */
@@ -19,7 +20,6 @@ interface RabbitMqQueueInterface extends QueueInterface
     /**
      * Bury a job. When a job is buried, it won't be retrieved from the queue
      *
-     * @param  JobInterface $job
      * @param  array        $options
      * @return void
      */
