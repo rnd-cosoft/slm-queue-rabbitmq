@@ -2,7 +2,7 @@
 
 namespace SlmQueueRabbitMq\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SlmQueue\Factory\WorkerAbstractFactory;
