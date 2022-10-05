@@ -6,135 +6,112 @@ use Laminas\Stdlib\AbstractOptions;
 
 class RabbitMqOptions extends AbstractOptions
 {
-    /** @var string */
-    protected $host;
+    protected string $host;
+    protected int $port;
+    protected string $user;
+    protected string $vhost;
+    protected string $password;
+    protected float $channelRpcTimeout;
+    protected array $sslOptions = [];
 
-    /** @var int */
-    protected $port;
-
-    /** @var string */
-    protected $user;
-
-    /** @var string */
-    protected $vhost;
-
-    /** @var string */
-    protected $password;
-
-    /** @var float */
-    protected $channelRpcTimeout;
-
-    /**
-     * @return string
-     */
     public function getHost(): string
     {
         return $this->host;
     }
 
-    /**
-     * @param string $host
-     * @return $this
-     */
-    public function setHost(string $host)
+    public function setHost(string $host): RabbitMqOptions
     {
         $this->host = $host;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getPort(): int
     {
         return $this->port;
     }
 
-    /**
-     * @param int $port
-     * @return $this
-     */
-    public function setPort(int $port)
+    public function setPort(int $port): RabbitMqOptions
     {
         $this->port = $port;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getUser(): string
     {
         return $this->user;
     }
 
-    /**
-     * @param string $user
-     * @return $this
-     */
-    public function setUser(string $user)
+    public function setUser(string $user): RabbitMqOptions
     {
         $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getVhost(): string
     {
         return $this->vhost;
     }
 
-    /**
-     * @param string $vhost
-     * @return $this
-     */
-    public function setVhost(string $vhost)
+    public function setVhost(string $vhost): RabbitMqOptions
     {
         $this->vhost = $vhost;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPassword(): string
     {
         return $this->password;
     }
 
-    /**
-     * @param string $password
-     * @return $this
-     */
-    public function setPassword(string $password)
+    public function setPassword(string $password): RabbitMqOptions
     {
         $this->password = $password;
 
         return $this;
     }
 
-    /**
-     * @param float $channelRpcTimeout
-     * @return $this
-     */
-    public function setChannelRpcTimeout($channelRpcTimeout)
+    public function getChannelRpcTimeout(): float
+    {
+        return $this->channelRpcTimeout;
+    }
+
+    public function setChannelRpcTimeout(float $channelRpcTimeout): RabbitMqOptions
     {
         $this->channelRpcTimeout = $channelRpcTimeout;
 
         return $this;
     }
 
-    /**
-     * @return float
-     */
-    public function getChannelRpcTimeout()
+    public function getSslOptions(): array
     {
-        return $this->channelRpcTimeout;
+        return $this->sslOptions;
+    }
+
+    public function setSslOptions(array $sslOptions): RabbitMqOptions
+    {
+        $this->sslOptions = $sslOptions;
+
+        return $this;
+    }
+
+    /**
+     * @return resource|null
+     */
+    public function getContext()
+    {
+        if ($this->sslOptions === []) {
+            return null;
+        }
+
+        $sslContext = stream_context_create();
+        foreach ($this->sslOptions as $key => $value) {
+            stream_context_set_option($sslContext, 'ssl', $key, $value);
+        }
+
+        return $sslContext;
     }
 }
