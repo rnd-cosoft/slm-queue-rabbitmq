@@ -47,7 +47,7 @@ class RabbitMqQueueFactory implements FactoryInterface
             'en_US',
             3.0,
             3.0,
-            null,
+            $options->getContext(),
             false,
             0,
             $options->getChannelRpcTimeout(),

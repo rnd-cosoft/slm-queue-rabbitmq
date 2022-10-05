@@ -2,12 +2,12 @@
 
 namespace SlmQueueRabbitMq\Connection;
 
+use Exception;
 use PhpAmqpLib\Connection\AMQPLazyConnection;
 
 class Connection extends AMQPLazyConnection
 {
-    /** @var bool */
-    private $connectionBlocked = false;
+    private bool $connectionBlocked = false;
 
     /**
      * @inheritdoc
@@ -51,7 +51,7 @@ class Connection extends AMQPLazyConnection
 
         $this->set_connection_block_handler(function() {
             $this->connectionBlocked = true;
-            throw new \Exception('connection.blocked is sent from the server');
+            throw new Exception('connection.blocked is sent from the server');
         });
     }
 
