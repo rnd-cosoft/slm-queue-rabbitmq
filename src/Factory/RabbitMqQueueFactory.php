@@ -2,12 +2,12 @@
 
 namespace SlmQueueRabbitMq\Factory;
 
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 use SlmQueue\Job\JobPluginManager;
 use SlmQueueRabbitMq\Connection\Connection;
-use SlmQueueRabbitMq\Queue\RabbitMqQueue;
 use SlmQueueRabbitMq\Options\RabbitMqOptions;
-use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\Factory\FactoryInterface;
+use SlmQueueRabbitMq\Queue\RabbitMqQueue;
 
 class RabbitMqQueueFactory implements FactoryInterface
 {
