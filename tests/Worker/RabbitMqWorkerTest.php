@@ -2,9 +2,8 @@
 
 namespace SlmQueueRabbitMqTest\Worker;
 
-use TypeError;
 use Exception;
-use Throwable;
+use Laminas\EventManager\EventManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -14,108 +13,78 @@ use SlmQueue\Worker\Event\ProcessJobEvent;
 use SlmQueueRabbitMq\Job\MessageRetryCounter;
 use SlmQueueRabbitMq\Queue\RabbitMqQueueInterface;
 use SlmQueueRabbitMq\Worker\RabbitMqWorker;
-use Laminas\EventManager\EventManagerInterface;
+use TypeError;
 
 class RabbitMqWorkerTest extends TestCase
 {
-    /** @var RabbitMqWorker */
-    private $rabbitMqWorker;
+    private RabbitMqWorker $rabbitMqWorker;
 
-    /** @var EventManagerInterface|MockObject */
-    private $eventManager;
-
-    /** @var LoggerInterface|MockObject */
-    private $logger;
-
-    /** @var MessageRetryCounter|MockObject */
-    private $messageRetryCounter;
+    private MockObject $logger;
+    private MockObject $messageRetryCounter;
+    private MockObject $job;
+    private MockObject $queue;
 
     protected function setUp(): void
     {
-        $this->eventManager = $this->createMock(EventManagerInterface::class);
+        $eventManager = $this->createMock(EventManagerInterface::class);
         $this->messageRetryCounter = $this->createMock(MessageRetryCounter::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->job = $this->createMock(JobInterface::class);
+        $this->queue = $this->createMock(RabbitMqQueueInterface::class);
 
-        $this->rabbitMqWorker = new RabbitMqWorker($this->eventManager, $this->messageRetryCounter, $this->logger);
+        $this->rabbitMqWorker = new RabbitMqWorker($eventManager, $this->messageRetryCounter, $this->logger);
     }
 
-    public function testProcessJobWhenQueueInterfaceIsNotRabbitMq()
+    public function testProcessJobWhenQueueInterfaceIsNotRabbitMq(): void
     {
-        /** @var JobInterface|MockObject $job */
-        $job = $this->createMock(JobInterface::class);
-
-        /** @var QueueInterface|MockObject $queue */
         $queue = $this->createMock(QueueInterface::class);
 
         $this->assertSame(
             ProcessJobEvent::JOB_STATUS_FAILURE,
-            $this->rabbitMqWorker->processJob($job, $queue)
+            $this->rabbitMqWorker->processJob($this->job, $queue)
         );
     }
 
-    public function testProcessJobWhenSuccess()
+    public function testProcessJobWhenSuccess(): void
     {
-        /** @var JobInterface|MockObject $job */
-        $job = $this->createMock(JobInterface::class);
-        /** @var QueueInterface|MockObject $queue */
-        $queue = $this->createMock(RabbitMqQueueInterface::class);
+        $this->job->expects($this->once())->method('execute');
+        $this->queue->expects($this->once())->method('delete');
+        $this->queue->method('getName')->willReturn('some_queue_name');
 
-        $job->expects($this->once())->method('execute');
-        $queue->expects($this->once())->method('delete');
-        $queue->method('getName')->willReturn('some_queue_name');
-
-        $this->assertEquals(
+        $this->assertSame(
             ProcessJobEvent::JOB_STATUS_SUCCESS,
-            $this->rabbitMqWorker->processJob($job, $queue)
+            $this->rabbitMqWorker->processJob($this->job, $this->queue)
         );
     }
 
-    public function testProcessJobWhenCannotRetry()
+    public function testProcessJobWhenCannotRetry(): void
     {
-        /** @var JobInterface|MockObject $job */
-        $job = $this->createMock(JobInterface::class);
-        $job->method('execute')->willThrowException(new \Exception());
+        $this->job->method('execute')->willThrowException(new Exception());
         $this->logger->expects($this->once())->method('error');
-        /** @var QueueInterface|MockObject $queue */
-        $queue = $this->createMock(RabbitMqQueueInterface::class);
 
-        $queue->expects($this->once())->method('delete');
-        $queue->method('getName')->willReturn('some_queue_name');
+        $this->queue->expects($this->once())->method('delete');
+        $this->queue->method('getName')->willReturn('some_queue_name');
 
-        $this->assertEquals(
+        $this->assertSame(
             ProcessJobEvent::JOB_STATUS_FAILURE,
-            $this->rabbitMqWorker->processJob($job, $queue)
+            $this->rabbitMqWorker->processJob($this->job, $this->queue)
         );
     }
 
-    public function testProcessJobWhenCanRetry()
+    public function testProcessJobWhenCanRetry(): void
     {
         $originalException = new TypeError('some error');
 
-        /** @var JobInterface|MockObject $job */
-        $job = $this->createMock(JobInterface::class);
-        $job->method('execute')->will($this->throwException($originalException));
-        $this->logger->expects($this->once())->method('warning')->willReturnCallback(
-            function ($message, array $context = array()) use ($originalException)
-            {
-                $this->assertInstanceOf(Exception::class, $context['exception'], 'exception is of correct class type');
-                /** @var Throwable $exception */
-                $exception = $context['exception'];
-                $this->assertEquals('some error', $exception->getMessage(), 'exception has original message');
-                $this->assertEquals(0, $exception->getCode(), 'exception has original error code');
-                $this->assertEquals($originalException, $exception->getPrevious(), 'exception has original exception');
-            }
-        );
+        $this->job->method('execute')->willThrowException($originalException);
+        $this->logger->expects($this->once())->method('warning')->with($originalException);
 
-        /** @var QueueInterface|MockObject $queue */
-        $queue = $this->createMock(RabbitMqQueueInterface::class);
         $this->messageRetryCounter->method('canRetry')->willReturn(true);
-        $queue->expects($this->once())->method('bury');
-        $queue->method('getName')->willReturn('some_queue_name');
+        $this->queue->expects($this->once())->method('bury');
+        $this->queue->method('getName')->willReturn('some_queue_name');
 
-        $this->assertEquals(
+        $this->assertSame(
             ProcessJobEvent::JOB_STATUS_FAILURE_RECOVERABLE,
-            $this->rabbitMqWorker->processJob($job, $queue)
+            $this->rabbitMqWorker->processJob($this->job, $this->queue)
         );
     }
 }
