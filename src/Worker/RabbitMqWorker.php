@@ -54,13 +54,13 @@ class RabbitMqWorker extends AbstractWorker
         } catch (Throwable $exception) {
             if ($this->retryCounter->canRetry($job, $queue->getName())) {
                 $queue->bury($job);
-                $this->logger->warning($exception);
+                $this->logger->warning($exception->getMessage(), ['exception' => $exception]);
 
                 return ProcessJobEvent::JOB_STATUS_FAILURE_RECOVERABLE;
             }
 
             $queue->delete($job);
-            $this->logger->error($exception);
+            $this->logger->error($exception->getMessage(), ['exception' => $exception]);
 
             return ProcessJobEvent::JOB_STATUS_FAILURE;
         }

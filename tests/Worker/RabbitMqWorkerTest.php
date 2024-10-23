@@ -76,7 +76,10 @@ class RabbitMqWorkerTest extends TestCase
         $originalException = new TypeError('some error');
 
         $this->job->method('execute')->willThrowException($originalException);
-        $this->logger->expects($this->once())->method('warning')->with($originalException);
+        $this->logger->expects($this->once())->method('warning')->with(
+            'some error',
+            ['exception' => $originalException],
+        );
 
         $this->messageRetryCounter->method('canRetry')->willReturn(true);
         $this->queue->expects($this->once())->method('bury');
